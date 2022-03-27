@@ -1,14 +1,24 @@
-import express from 'express';
-import cors from 'cors';
+import 'reflect-metadata'
+import path from 'path';
+import { ApolloServer } from 'apollo-server';
+import { buildSchema } from 'type-graphql';
+import { UserResolver } from './user/resolvers/UserResolver';
 
-import { router } from './routes';
+async function main() {
+  const schema = await buildSchema({
+    resolvers: [
+      UserResolver
+    ],
+    emitSchemaFile: path.resolve(__dirname, 'schema.gql'),
+  });
 
-const app = express();
+  const server = new ApolloServer({
+    schema,
+  });
 
-app.use(cors({
-  origin: '*'
-}));
-app.use(express.json());
-app.use(router);
+  const { url } = await server.listen();
 
-app.listen(3333, () => console.log(`Server is running on PORT ${3333}`));
+  console.log(`Server running on ${url}`);
+}
+
+main();
