@@ -10,12 +10,20 @@ export class UserRepository implements IUserRepository {
     return body;
   }
 
-  async update(body: Partial<User>): Promise<User> {
-    return null
+  async update(body: User): Promise<User> {
+    const userIndex = await this.users.findIndex((element) => element._id === body._id);
+    await this.users.slice(userIndex, 1);
+
+    const userUpdated: User = {
+      ...body,
+      updatedAt: new Date()
+    }
+
+    return userUpdated;
   }
 
   async findAll(): Promise<User[]> {
-    return await this.users
+    return await this.users;
   }
 
   async findById(userId: string): Promise<User> {

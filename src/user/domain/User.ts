@@ -12,8 +12,8 @@ export class User {
   @Field()
   public password: string;
 
-  // @Field()
-  // public trackers?: Trackers[];
+  @Field(type => [Tracker], { nullable: true })
+  public trackers?: Tracker[];
 
   @Field()
   public createdAt?: Date;
@@ -28,11 +28,33 @@ export class User {
 }
 
 @ObjectType()
-export class Trackers {
+export class Tracker {
   @Field()
-  public trackCode: string;
+  public code: string;
 
-  constructor(props: Trackers) {
+  @Field(type => [TrackInfo])
+  public packageInfo: TrackInfo[];
+
+  constructor(props: Tracker) {
+    Object.assign(this, props);
+  }
+}
+@ObjectType()
+export class TrackInfo {
+  @Field()
+  public status: string;
+  @Field()
+  public data: string;
+  @Field()
+  public hora?: string;
+  @Field()
+  public origem?: string;
+  @Field()
+  public destino?: string;
+  @Field()
+  public local: string;
+
+  constructor(props: TrackInfo) {
     Object.assign(this, props);
   }
 }

@@ -10,11 +10,27 @@ scalar DateTime
 
 type Mutation {
   save(active: Boolean!, email: String!, name: String!, password: String!): User!
+  update(_id: String!, active: Boolean, email: String, name: String, password: String): User!
 }
 
 type Query {
   findAll: [User!]!
   findById(_id: String!): User!
+  searchPackageByCode(code: String!): Tracker!
+}
+
+type TrackInfo {
+  data: String!
+  destino: String!
+  hora: String!
+  local: String!
+  origem: String!
+  status: String!
+}
+
+type Tracker {
+  code: String!
+  packageInfo: [TrackInfo!]!
 }
 
 type User {
@@ -24,5 +40,6 @@ type User {
   email: String!
   name: String!
   password: String!
+  trackers: [Tracker!]
   updatedAt: DateTime!
 }
