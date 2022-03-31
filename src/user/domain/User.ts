@@ -22,9 +22,18 @@ export class User {
   @Field()
   public active: boolean;
 
+  @Field({ nullable: true })
+  public accessToken?: string;
+
   constructor(props: Omit<User, '_id'>) {
     Object.assign(this, props)
   }
+}
+
+@ObjectType()
+export class Token {
+  @Field()
+  public accessToken: string;
 }
 
 @ObjectType()

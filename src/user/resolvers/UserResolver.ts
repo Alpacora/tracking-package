@@ -1,5 +1,5 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
-import { Tracker, TrackInfo, User } from "../domain/User";
+import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
+import { Tracker, Token, User } from "../domain/User";
 import { UserService } from "../service";
 import { UserRepository } from "../repository/UserRepository";
 import { v4 } from "uuid";
@@ -37,7 +37,7 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  async save(
+  async register(
     @Arg('name') name: string,
     @Arg('email') email: string,
     @Arg('password') password: string,
@@ -77,5 +77,30 @@ export class UserResolver {
     });
 
     return userUpdated
+  }
+
+  @Mutation(() => User)
+  async addPackage(
+    @Arg('_id') _id: string,
+    @Arg('code') code: string
+  ) {
+
+    const userWithPackage = await this.userService.addPackage(_id, code);
+
+    return userWithPackage
+  }
+
+  @Mutation(() => User)
+  async login(
+    @Arg('email') email: string,
+    @Arg('password') password: string,
+  ) {
+
+    const createdUser = await this.userService.handleLogin(
+      email ? email as unknown as string : '',
+      password ? password as unknown as string : ''
+    );
+
+    return createdUser
   }
 }

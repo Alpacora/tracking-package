@@ -1,5 +1,5 @@
 import { IUserRepository } from "../domain/Repository";
-import { User } from "../domain/User";
+import { Tracker, User } from "../domain/User";
 
 export class UserRepository implements IUserRepository {
 
@@ -29,5 +29,18 @@ export class UserRepository implements IUserRepository {
   async findById(userId: string): Promise<User> {
     const user = this.users.find((element) => element._id === userId);
     return user;
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    const user = this.users.find((element) => element.email === email);
+    return user;
+  }
+
+  async addTrack(userId: string, trackPackage: Tracker): Promise<User> {
+    const user = this.users.find((element) => element._id === userId);
+    const modifier = user;
+    modifier.trackers.push(trackPackage);
+
+    return modifier
   }
 }
