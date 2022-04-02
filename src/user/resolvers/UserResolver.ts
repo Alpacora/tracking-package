@@ -1,16 +1,16 @@
-import { Arg, ID, Mutation, Query, Resolver } from "type-graphql";
-import { Tracker, Token, User } from "../domain/User";
+import { Arg, ID, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import { Tracker, User } from "../domain/User";
 import { UserService } from "../service";
 import { UserRepository } from "../repository/UserRepository";
 import { v4 } from "uuid";
 import bcrypt from 'bcrypt';
-import { ScrapPackageTrackInfo } from "../../utils/ScrapPackageTrackInfo";
+import { verifyAuth } from "../../middlewares/VerifyAuth";
 
 @Resolver()
 export class UserResolver {
 
   constructor(
-    private userService = new UserService(new UserRepository(), new ScrapPackageTrackInfo())
+    private userService = new UserService(new UserRepository())
   ) { }
 
   @Query(() => [User])
@@ -80,6 +80,7 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
+  @UseMiddleware(verifyAuth)
   async addPackage(
     @Arg('_id') _id: string,
     @Arg('code') code: string

@@ -2,12 +2,12 @@ import { Tracker, TrackInfo, User } from "./domain/User";
 import { UserRepository } from "./repository/UserRepository";
 import { ScrapPackageTrackInfo } from "../utils/ScrapPackageTrackInfo";
 import { compare } from "bcrypt";
+import { sign } from "jsonwebtoken";
 
 export class UserService {
 
   constructor(
     public userRepository: UserRepository,
-    public scrapPackageTrackInfo: ScrapPackageTrackInfo
   ) { }
 
   async handleLogin(email: string, password: string): Promise<User> {
@@ -22,6 +22,10 @@ export class UserService {
     if (!verify) {
       throw new Error("Wrong Password");
     }
+
+    user.accessToken = sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '15m',
+    })
 
     return user
   }
@@ -68,7 +72,7 @@ export class UserService {
   }
 
   async searchPackageByCode(code: string): Promise<Tracker> {
-    const track = await this.scrapPackageTrackInfo.execute(code);
+    const track = await ScrapPackageTrackInfo(code);
     if (track.packageInfo.length === 0) {
       throw new Error("Check track code, package not found");
     }
@@ -84,7 +88,7 @@ export class UserService {
       throw new Error("User doesn't exists");
     }
 
-    const track = await this.scrapPackageTrackInfo.execute(code);
+    const track = await ScrapPackageTrackInfo(code);
     if (track.packageInfo.length === 0) {
       throw new Error("Check track code, package not found");
     }

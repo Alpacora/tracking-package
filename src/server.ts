@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import 'reflect-metadata'
 import express from 'express';
 import path from 'path';
@@ -17,15 +18,20 @@ async function main() {
   });
 
   const server = new ApolloServer({
-    schema
+    schema,
+    context: ({ req }) => {
+      const context = {
+        req
+      }
+      return context;
+    }
   });
-
 
   await server.start();
 
   server.applyMiddleware({ app });
 
-  app.listen(4000, () => console.log("Server running at http://localhost:4000/"));
+  app.listen(4000, () => console.log("Server running at http://localhost:4000/graphql"));
 }
 
 main();
