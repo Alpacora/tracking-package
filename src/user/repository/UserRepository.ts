@@ -1,5 +1,6 @@
+import { Tracker } from "../../tracker/domain/TrackerDomain";
 import { IUserRepository } from "../domain/Repository";
-import { Tracker, User } from "../domain/User";
+import { User } from "../domain/UserDomain";
 
 export class UserRepository implements IUserRepository {
 

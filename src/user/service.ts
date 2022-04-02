@@ -1,13 +1,16 @@
-import { Tracker, TrackInfo, User } from "./domain/User";
-import { UserRepository } from "./repository/UserRepository";
-import { ScrapPackageTrackInfo } from "../utils/ScrapPackageTrackInfo";
 import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
+import { User } from "./domain/UserDomain";
+import { Tracker } from "../tracker/domain/TrackerDomain";
+import { UserRepository } from "./repository/UserRepository";
+import { TrackerRepository } from "../tracker/repository/TrackerRepository";
+import { ScrapPackageTrackInfo } from "../utils/ScrapPackageTrackInfo";
 
 export class UserService {
 
   constructor(
     public userRepository: UserRepository,
+    public trackRepository: TrackerRepository
   ) { }
 
   async handleLogin(email: string, password: string): Promise<User> {
@@ -88,12 +91,19 @@ export class UserService {
       throw new Error("User doesn't exists");
     }
 
-    const track = await ScrapPackageTrackInfo(code);
+    const checkExistsTracker = await this.trackRepository.findByCode(code);
+
+    if (checkExistsTracker) {
+      throw new Error("Package already exists");
+    }
+
+    const track = await ScrapPackageTrackInfo(code, userId);
     if (track.packageInfo.length === 0) {
-      throw new Error("Check track code, package not found");
+      throw new Error("Verify your track code, package not found");
     }
 
     const trackAdded = await this.userRepository.addTrack(userId, track);
+    await this.trackRepository.save(track);
 
     return trackAdded
   }

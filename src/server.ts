@@ -5,6 +5,7 @@ import path from 'path';
 import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from 'type-graphql';
 import { UserResolver } from './user/resolvers/UserResolver';
+import { TrackerResolver } from './tracker/resolvers/TrackerResolver';
 
 async function main() {
 
@@ -12,7 +13,8 @@ async function main() {
 
   const schema = await buildSchema({
     resolvers: [
-      UserResolver
+      UserResolver,
+      TrackerResolver
     ],
     emitSchemaFile: path.resolve(__dirname, 'schema.gql'),
   });

@@ -1,4 +1,5 @@
-import { Tracker, User } from "./User";
+import { User } from "./UserDomain";
+import { Tracker } from "../../tracker/domain/TrackerDomain";
 
 export interface IUserRepository{
   save(body: User): Promise<User>;

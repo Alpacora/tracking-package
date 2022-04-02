@@ -1,16 +1,19 @@
-import { Arg, ID, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
-import { Tracker, User } from "../domain/User";
-import { UserService } from "../service";
-import { UserRepository } from "../repository/UserRepository";
-import { v4 } from "uuid";
 import bcrypt from 'bcrypt';
+import { v4 } from "uuid";
+import { Arg, ID, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+
+import { UserService } from "../service";
+import { User } from "../domain/UserDomain";
+import { Tracker } from '../../tracker/domain/TrackerDomain';
 import { verifyAuth } from "../../middlewares/VerifyAuth";
+import { UserRepository } from "../repository/UserRepository";
+import { TrackerRepository } from '../../tracker/repository/TrackerRepository';
 
 @Resolver()
 export class UserResolver {
 
   constructor(
-    private userService = new UserService(new UserRepository())
+    private userService = new UserService(new UserRepository(), new TrackerRepository())
   ) { }
 
   @Query(() => [User])

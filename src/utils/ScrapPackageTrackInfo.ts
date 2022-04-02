@@ -1,5 +1,6 @@
 import axios from "axios";
 import cheerio from "cheerio";
+import { Tracker } from "../tracker/domain/TrackerDomain";
 
 interface ITrack {
   status: string;
@@ -10,7 +11,7 @@ interface ITrack {
   local: string;
 }
 
-export const ScrapPackageTrackInfo = async (code: string) => {
+export const ScrapPackageTrackInfo = async (code: string, userId?: string): Promise<Tracker> => {
   const track = await axios.get(`https://www.linkcorreios.com.br/${code}`);
 
   const data = <ITrack[]>[];
@@ -35,6 +36,7 @@ export const ScrapPackageTrackInfo = async (code: string) => {
   data.shift();
 
   return {
+    userId: userId,
     code: code,
     packageInfo: data
   };

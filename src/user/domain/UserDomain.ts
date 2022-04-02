@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from "type-graphql";
+import { Tracker } from "../../tracker/domain/TrackerDomain";
 
 @ObjectType()
 export class User {
@@ -34,36 +35,4 @@ export class User {
 export class Token {
   @Field()
   public accessToken: string;
-}
-
-@ObjectType()
-export class Tracker {
-  @Field()
-  public code: string;
-
-  @Field(type => [TrackInfo])
-  public packageInfo: TrackInfo[];
-
-  constructor(props: Tracker) {
-    Object.assign(this, props);
-  }
-}
-@ObjectType()
-export class TrackInfo {
-  @Field()
-  public status: string;
-  @Field()
-  public data: string;
-  @Field()
-  public hora?: string;
-  @Field()
-  public origem?: string;
-  @Field()
-  public destino?: string;
-  @Field()
-  public local: string;
-
-  constructor(props: TrackInfo) {
-    Object.assign(this, props);
-  }
 }

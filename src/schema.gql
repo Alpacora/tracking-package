@@ -17,6 +17,7 @@ type Mutation {
 
 type Query {
   findAll: [User!]!
+  findByCode(code: String!): Tracker!
   findById(_id: String!): User!
   searchPackageByCode(code: String!): Tracker!
 }
@@ -32,7 +33,16 @@ type TrackInfo {
 
 type Tracker {
   code: String!
+  messages: [TrackerMessage!]!
   packageInfo: [TrackInfo!]!
+  userId: String!
+}
+
+type TrackerMessage {
+  content: String!
+  createdAt: DateTime!
+  senderId: String!
+  userName: String!
 }
 
 type User {
