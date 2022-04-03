@@ -1,16 +1,40 @@
+import { Collection, Document, MongoClient, ObjectId } from "mongodb";
 import { Service } from "typedi";
 import { Tracker } from "../../tracker/domain/TrackerDomain";
 import { IUserRepository } from "../domain/Repository";
 import { User } from "../domain/UserDomain";
-
 @Service()
 export class UserRepository implements IUserRepository {
 
   public users: User[] = [];
 
+  public client: MongoClient;
+  public collection: Collection<Document>;
+
+  async connectDB(): Promise<void> {
+    this.client = new MongoClient(process.env.DATA_BASE_URL), { useNewUrlParser: true, useUnifiedTopology: true };
+
+    await this.client.connect(async (err) => {
+      this.collection = this.client.db('User').collection('users');
+    })
+  }
+
+  async closeDbConnection(): Promise<void> {
+    await this.client.close();
+  }
+
   async save(body: User): Promise<User> {
-    await this.users.push(body);
-    return body;
+    await this.connectDB();
+
+    const result = await this.collection.insertOne({
+      ...body,
+      _id: new ObjectId(body._id)
+    });
+
+    // await this.users.push(body);
+    console.log(result);
+
+    return result;
   }
 
   async update(body: User): Promise<User> {
