@@ -1,6 +1,7 @@
+import { Service } from "typedi";
 import { ITrackerRepository } from "../domain/Repository";
 import { Tracker } from "../domain/TrackerDomain";
-
+@Service()
 export class TrackerRepository implements ITrackerRepository {
 
   private trackers: Tracker[] = [];

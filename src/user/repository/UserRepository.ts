@@ -1,7 +1,9 @@
+import { Service } from "typedi";
 import { Tracker } from "../../tracker/domain/TrackerDomain";
 import { IUserRepository } from "../domain/Repository";
 import { User } from "../domain/UserDomain";
 
+@Service()
 export class UserRepository implements IUserRepository {
 
   public users: User[] = [];

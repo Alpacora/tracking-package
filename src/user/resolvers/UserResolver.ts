@@ -1,19 +1,18 @@
 import bcrypt from 'bcrypt';
 import { v4 } from "uuid";
+import { Service } from 'typedi';
 import { Arg, ID, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 
 import { UserService } from "../service";
 import { User } from "../domain/UserDomain";
 import { Tracker } from '../../tracker/domain/TrackerDomain';
 import { verifyAuth } from "../../middlewares/VerifyAuth";
-import { UserRepository } from "../repository/UserRepository";
-import { TrackerRepository } from '../../tracker/repository/TrackerRepository';
-
+@Service()
 @Resolver()
 export class UserResolver {
 
   constructor(
-    private userService = new UserService(new UserRepository(), new TrackerRepository())
+    private userService: UserService
   ) { }
 
   @Query(() => [User])

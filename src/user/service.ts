@@ -1,4 +1,5 @@
 import { compare } from "bcrypt";
+import { Service } from "typedi";
 import { sign } from "jsonwebtoken";
 import { User } from "./domain/UserDomain";
 import { Tracker } from "../tracker/domain/TrackerDomain";
@@ -6,6 +7,7 @@ import { UserRepository } from "./repository/UserRepository";
 import { TrackerRepository } from "../tracker/repository/TrackerRepository";
 import { ScrapPackageTrackInfo } from "../utils/ScrapPackageTrackInfo";
 
+@Service()
 export class UserService {
 
   constructor(

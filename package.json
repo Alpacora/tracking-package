@@ -5,7 +5,9 @@
   "author": "Kaê Benning",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts"
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc"
   },
   "dependencies": {
     "apollo-server-express": "^3.6.7",
@@ -19,6 +21,7 @@
     "jsonwebtoken": "^8.5.1",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
+    "typedi": "0.10.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

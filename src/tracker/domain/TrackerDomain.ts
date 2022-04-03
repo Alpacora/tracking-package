@@ -12,7 +12,7 @@ export class Tracker {
   @Field(type => [TrackInfo])
   public packageInfo: TrackInfo[];
 
-  @Field(type => [TrackerMessage])
+  @Field(type => [TrackerMessage], { nullable: true })
   public messages?: TrackerMessage[];
 
   constructor(props: Tracker) {
