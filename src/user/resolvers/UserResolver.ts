@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import { v4 } from "uuid";
 import { Service } from 'typedi';
+import { ObjectId } from 'mongodb';
 import { Arg, ID, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 
 import { UserService } from "../service";
@@ -47,7 +47,6 @@ export class UserResolver {
   ) {
 
     const user: User = {
-      _id: v4(),
       name,
       email,
       password: bcrypt.hashSync(password, 8),

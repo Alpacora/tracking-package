@@ -13,28 +13,32 @@ export class UserRepository implements IUserRepository {
 
   async connectDB(): Promise<void> {
     this.client = new MongoClient(process.env.DATA_BASE_URL), { useNewUrlParser: true, useUnifiedTopology: true };
-
-    await this.client.connect(async (err) => {
-      this.collection = this.client.db('User').collection('users');
-    })
+    await this.client.connect();
+    this.collection = this.client.db('User').collection('users');;
   }
 
   async closeDbConnection(): Promise<void> {
     await this.client.close();
   }
 
-  async save(body: User): Promise<User> {
+  async save(body: Omit<User, '_id'>): Promise<User> {
     await this.connectDB();
 
-    const result = await this.collection.insertOne({
-      ...body,
-      _id: new ObjectId(body._id)
-    });
+    let userCreated = undefined;
 
-    // await this.users.push(body);
-    console.log(result);
+    try {
+      await this.collection.insertOne(body, async (err, user) => {
+        userCreated = user;
+      });
+    } catch (error) {
+      throw new Error(`Server temporally unavailable, code: ${error}`);
+    } finally {
+      await this.closeDbConnection();
+    }
 
-    return result;
+    console.log(userCreated);
+
+    return userCreated;
   }
 
   async update(body: User): Promise<User> {

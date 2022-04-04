@@ -1,10 +1,11 @@
+import { ObjectId } from "mongodb";
 import { Field, ID, ObjectType } from "type-graphql";
 import { Tracker } from "../../tracker/domain/TrackerDomain";
 
 @ObjectType()
 export class User {
   @Field(_type => ID)
-  public _id: string;
+  public readonly _id?: string;
 
   @Field()
   public name: string;
