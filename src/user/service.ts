@@ -36,9 +36,16 @@ export class UserService {
   }
 
   async save(body: User): Promise<User> {
-    this.userRepository.save(body);
 
-    return body;
+    const user = await this.findByEmail(body.email);
+
+    if (user) {
+      throw new Error("Email already in use");
+    }
+
+    const userCreated = await this.userRepository.save(body);
+
+    return userCreated;
   }
 
   async update(body: Partial<User>): Promise<User> {

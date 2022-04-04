@@ -27,16 +27,18 @@ export class UserRepository implements IUserRepository {
     let userCreated = undefined;
 
     try {
-      await this.collection.insertOne(body, async (err, user) => {
-        userCreated = user;
-      });
+      const response = await this.collection.insertOne(body);
+      const createdUser = await this.collection.findOne({ _id: response.insertedId });
+      userCreated = {
+        ...createdUser,
+        _id: createdUser._id.toString()
+      };
+
     } catch (error) {
       throw new Error(`Server temporally unavailable, code: ${error}`);
     } finally {
       await this.closeDbConnection();
     }
-
-    console.log(userCreated);
 
     return userCreated;
   }
