@@ -66,7 +66,8 @@ export class UserService {
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userRepository.findAll();
+    const users = await this.userRepository.findAll();
+    return users;
   }
 
   async findByEmail(email: string): Promise<User> {
@@ -111,9 +112,9 @@ export class UserService {
       throw new Error("Verify your track code, package not found");
     }
 
-    const trackAdded = await this.userRepository.addTrack(userId, track);
-    await this.trackRepository.save(track);
+    const trackAdded = await this.trackRepository.save(track);
+    const userPackageAdded = await this.userRepository.addTrack(userId, trackAdded);
 
-    return trackAdded
+    return userPackageAdded
   }
 }

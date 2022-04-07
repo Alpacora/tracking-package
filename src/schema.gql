@@ -32,9 +32,12 @@ type TrackInfo {
 }
 
 type Tracker {
+  _id: ID!
   code: String!
+  createdAt: DateTime!
   messages: [TrackerMessage!]
   packageInfo: [TrackInfo!]!
+  updatedAt: DateTime!
   userId: String!
 }
 

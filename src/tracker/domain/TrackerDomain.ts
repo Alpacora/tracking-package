@@ -1,7 +1,10 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
 export class Tracker {
+
+  @Field(_type => ID)
+  public _id?: string;
 
   @Field()
   public userId?: string;
@@ -15,7 +18,12 @@ export class Tracker {
   @Field(type => [TrackerMessage], { nullable: true })
   public messages?: TrackerMessage[];
 
-  constructor(props: Tracker) {
+  @Field()
+  public createdAt?: Date;
+  @Field()
+  public updatedAt?: Date;
+
+  constructor(props: Omit<Tracker, '_id'>) {
     Object.assign(this, props);
   }
 }

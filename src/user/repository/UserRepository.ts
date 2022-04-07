@@ -14,7 +14,7 @@ export class UserRepository implements IUserRepository {
   async connectDB(): Promise<void> {
     this.client = new MongoClient(process.env.DATA_BASE_URL), { useNewUrlParser: true, useUnifiedTopology: true };
     await this.client.connect();
-    this.collection = this.client.db('User').collection('users');;
+    this.collection = this.client.db('User').collection('users');
   }
 
   async closeDbConnection(): Promise<void> {
@@ -56,24 +56,85 @@ export class UserRepository implements IUserRepository {
   }
 
   async findAll(): Promise<User[]> {
-    return await this.users;
+
+    await this.connectDB();
+
+    let crud = undefined;
+
+    try {
+      const usersFounded = await this.collection.find();
+
+      crud = usersFounded;
+    } catch (error) {
+      throw new Error(`Server temporally unavailable, code: ${error}`);
+    } finally {
+      await this.closeDbConnection();
+    }
+
+    console.log(crud);
+
+    return await crud;
   }
 
   async findById(userId: string): Promise<User> {
-    const user = this.users.find((element) => element._id === userId);
-    return user;
+    // const user = this.users.find((element) => element._id === userId);
+
+    await this.connectDB();
+
+    let foundedUser = undefined;
+
+    try {
+      const user = await this.collection.findOne({ _id: new ObjectId(userId) });
+
+      foundedUser = user;
+    } catch (error) {
+      throw new Error(`Server temporally unavailable, code: ${error}`);
+    } finally {
+      await this.closeDbConnection();
+    }
+
+    return foundedUser;
   }
 
   async findByEmail(email: string): Promise<User> {
-    const user = this.users.find((element) => element.email === email);
-    return user;
+    // const user = this.users.find((element) => element.email === email);
+
+    await this.connectDB();
+
+    let foundedUser = undefined;
+
+    try {
+      const user = await this.collection.findOne({ email: email });
+
+      foundedUser = user;
+    } catch (error) {
+      throw new Error(`Server temporally unavailable, code: ${error}`);
+    } finally {
+      await this.closeDbConnection();
+    }
+
+    return foundedUser;
   }
 
   async addTrack(userId: string, trackPackage: Tracker): Promise<User> {
-    const user = this.users.find((element) => element._id === userId);
-    const modifier = user;
-    modifier.trackers.push(trackPackage);
+    await this.connectDB();
 
-    return modifier
+    let trackAdded = undefined;
+
+    try {
+      const user = await this.collection.findOneAndUpdate({ _id: new ObjectId(userId) },
+        { $push: { 'trackers': trackPackage as never } },
+        { upsert: true, returnDocument: 'after' });
+
+
+      trackAdded = user.value;
+
+    } catch (error) {
+      throw new Error(`Server temporally unavailable, code: ${error}`);
+    } finally {
+      await this.closeDbConnection();
+    }
+
+    return trackAdded
   }
 }
