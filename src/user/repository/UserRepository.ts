@@ -44,15 +44,32 @@ export class UserRepository implements IUserRepository {
   }
 
   async update(body: User): Promise<User> {
-    const userIndex = await this.users.findIndex((element) => element._id === body._id);
-    await this.users.slice(userIndex, 1);
+    await this.connectDB();
 
-    const userUpdated: User = {
-      ...body,
-      updatedAt: new Date()
+    let userUpdated = undefined;
+
+    try {
+      userUpdated = await this.collection.findOneAndUpdate({ _id: new ObjectId(body._id) },
+        { $set: { ...body, updatedAt: new Date() } },
+        { upsert: true, returnDocument: 'after' });
+
+    } catch (error) {
+      throw new Error(`Server temporally unavailable, code: ${error}`);
+
+    } finally {
+      await this.closeDbConnection();
     }
 
     return userUpdated;
+    // const userIndex = await this.users.findIndex((element) => element._id === body._id);
+    // await this.users.slice(userIndex, 1);
+
+    // const userUpdated: User = {
+    //   ...body,
+    //   updatedAt: new Date()
+    // }
+
+    // return userUpdated;
   }
 
   async findAll(): Promise<User[]> {
